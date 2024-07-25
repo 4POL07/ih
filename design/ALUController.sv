@@ -15,10 +15,11 @@ module ALUController (
       ((ALUOp == 2'b10) && (Funct3 == 3'b101) && (Funct7 == 7'b0100000));  // R\I->>>
 
   assign Operation[1] = (ALUOp == 2'b00) ||  // LW\SW
-      ((ALUOp == 2'b10) && (Funct3 == 3'b000)) ||  // R\I-add
+      ((ALUOp == 2'b10) && (Funct3 == 3'b000) && (Funct7 == 7'b0000000)) ||  // R\I-add
       ((ALUOp == 2'b10) && (Funct3 == 3'b101) && (Funct7 == 7'b0100000));  // R\I->>>
 
   assign Operation[2] =  ((ALUOp==2'b10) && (Funct3==3'b101) && (Funct7==7'b0000000)) || // R\I->>
+      ((ALUOp == 2'b10) && (Funct3 == 3'b000) && (Funct7 == 7'b0100000)) ||
       ((ALUOp == 2'b10) && (Funct3 == 3'b101) && (Funct7 == 7'b0100000)) ||  // R\I->>>
       ((ALUOp == 2'b10) && (Funct3 == 3'b001)) ||  // R\I-<<
       ((ALUOp == 2'b10) && (Funct3 == 3'b010));  // R\I-<
@@ -26,3 +27,11 @@ module ALUController (
   assign Operation[3] = (ALUOp == 2'b01) ||  // BEQ
       ((ALUOp == 2'b10) && (Funct3 == 3'b010));  // R\I-<
 endmodule
+
+// imm [11:5]
+//  0000000 = slli
+//  0000000 = srli
+//  0100000 = srai
+
+// funct7
+// 0000000 add/slt/sçu
