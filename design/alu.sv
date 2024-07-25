@@ -32,3 +32,5 @@ module alu#(
             endcase
         end
 endmodule
+
+//todos de branch tem que terminar em 1 -> beq 1000 mas [3] = 1
