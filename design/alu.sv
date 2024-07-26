@@ -21,10 +21,24 @@ module alu#(
                     ALUResult = SrcA | SrcB;
             4'b0010:        // ADD
                     ALUResult = $signed(SrcA) + $signed(SrcB);
-            4'b0011:        // XOR
-                    ALUResult = SrcA ^ SrcB;
-            4'b0100:        // SUB
+	    4'b0011:        // SUB
                     ALUResult = $signed(SrcA) - $signed(SrcB);
+            4'b0100:        // XOR
+                    ALUResult = SrcA ^ SrcB;
+            4'b0101:        // SLT
+                    ALUResult = 0;
+            4'b1001:        // LUI
+                    ALUResult = 0;
+            4'b1010:        // SLTI
+                    ALUResult = 0; 
+            4'b1011:        // ADDI
+                    ALUResult = 0;
+            4'b1100:        // SLLI
+                    ALUResult = 0;
+            4'b1101:        // SRLI
+                    ALUResult = 0;
+            4'b1110:        // SRAI
+                    ALUResult = 0;
             4'b1000:        // Equal
                     ALUResult = (SrcA == SrcB) ? 1 : 0;
             default:
