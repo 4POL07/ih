@@ -23,28 +23,26 @@ module alu#(
                     ALUResult = $signed(SrcA) + $signed(SrcB);
 	    4'b0011:        // SUB
                     ALUResult = $signed(SrcA) - $signed(SrcB);
-            4'b0100:        // XOR
+            4'b0100:        // XOR 
                     ALUResult = SrcA ^ SrcB;
-            4'b0101:        // SLT
-                    ALUResult = 0;
-            4'b1001:        // LUI
-                    ALUResult = 0;
-            4'b1010:        // SLTI
-                    ALUResult = 0; 
-            4'b1011:        // ADDI
-                    ALUResult = 0;
-            4'b1100:        // SLLI
-                    ALUResult = 0;
-            4'b1101:        // SRLI
-                    ALUResult = 0;
-            4'b1110:        // SRAI
-                    ALUResult = 0;
-            4'b1000:        // Equal
+            4'b0101:        // SLLI
+                    ALUResult = SrcA << SrcB;
+            4'b0110:        // SRLI
+                    ALUResult = SrcA >> SrcB;
+            4'b0111:        // SRAI
+                    ALUResult = $signed(SrcA) >>> SrcB[4:0];
+         
+            4'b1000:        // BGE
                     ALUResult = (SrcA == SrcB) ? 1 : 0;
+            4'b1001:        // BNE
+                    ALUResult = (SrcA != SrcB) ? 1 : 0;
+            4'b1010:        // BLT,SLT,SLTI
+                    ALUResult = ($signed(SrcA) < $signed(SrcB)) ? 1 : 0;
+            4'b1011:        // BGE
+                    ALUResult = ($signed(SrcA) >= $signed(SrcB)) ? 1 : 0;
             default:
                     ALUResult = 0;
             endcase
         end
 endmodule
 
-//todos de branch tem que terminar em 1 -> beq 1000 mas [3] = 1
