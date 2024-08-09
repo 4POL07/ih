@@ -15,30 +15,36 @@ module Controller (
     output logic RegWrite, //The register on the Write register input is written with the value on the Write data input 
     output logic MemRead,  //Data memory contents designated by the address input are put on the Read data output
     output logic MemWrite, //Data memory contents designated by the address input are replaced by the value on the Write data input.
-    output logic [1:0] ALUOp,  //00: LW/SW; 01:Branch; 10: Rtype
-    output logic Branch  //0: branch is not taken; 1: branch is taken
-    //output logic jal,
+    output logic [1:0] ALUOp,  //00: I_TYPE_LOAD/S_TYPE; 01:Branch; 10: Rtype
+    output logic Branch,  //0: branch is not taken; 1: branch is taken
+    output logic JalrSel,
+    output logic HaltSel,
+    output logic [1:0] WRMux
 );
 
-  logic [6:0] R_TYPE, I_TYPE, U_TYPE, LW, SW, BR, JAL, JALR;
+  logic [6:0] R_TYPE, I_TYPE, U_TYPE, I_TYPE_LOAD, S_TYPE, B_TYPE, JAL, JALR, HALT;
 
-  assign R_TYPE = 7'b0110011;  //add,and
+  assign R_TYPE = 7'b0110011;
   assign I_TYPE = 7'b0010011;
   assign U_TYPE = 7'b0110111;
-  assign LW = 7'b0000011;  //lw
-  assign SW = 7'b0100011;  //sw
-  assign BR = 7'b1100011;  //beq
+  assign I_TYPE_LOAD = 7'b0000011;
+  assign S_TYPE = 7'b0100011;
+  assign B_TYPE = 7'b1100011;
+  assign HALT = 7'b1111111;
   assign JAL = 7'b1101111;
   assign JALR = 7'b1100111;
 
-  assign ALUSrc = (Opcode == LW || Opcode == SW || Opcode == I_TYPE || Opcode == U_TYPE || Opcode == JALR);
-  assign MemtoReg = (Opcode == LW);
-  assign RegWrite = (Opcode == R_TYPE || Opcode == LW || Opcode == I_TYPE || Opcode == JAL || Opcode == JALR || Opcode == U_TYPE);
-  assign MemRead = (Opcode == LW);
-  assign MemWrite = (Opcode == SW);
-  assign ALUOp[0] = (Opcode == BR || Opcode == JAL || Opcode == U_TYPE);
+  assign ALUSrc = (Opcode == I_TYPE_LOAD || Opcode == S_TYPE || Opcode == I_TYPE || Opcode == JALR || Opcode == U_TYPE);
+  assign MemtoReg = (Opcode == I_TYPE_LOAD);
+  assign RegWrite = (Opcode == R_TYPE || Opcode == I_TYPE_LOAD || Opcode == I_TYPE || Opcode == JAL || Opcode == JALR || Opcode == U_TYPE);
+  assign MemRead = (Opcode == I_TYPE_LOAD);
+  assign MemWrite = (Opcode == S_TYPE);
+  assign ALUOp[0] = (Opcode == B_TYPE || Opcode == JAL || Opcode == U_TYPE);
   assign ALUOp[1] = (Opcode == R_TYPE || Opcode == JAL || Opcode == U_TYPE || Opcode == I_TYPE);
-  assign Branch = (Opcode == BR || Opcode == JAL);
-  //assign jalr = (Opcode == JALR);
+  assign WRMux[0] = (Opcode == JAL || Opcode == JALR);
+  assign WRMux[1] = (Opcode == U_TYPE);
+  assign Branch = (Opcode == B_TYPE || Opcode == JAL);
+  assign JalrSel = (Opcode == JALR);
+  assign HaltSel = (Opcode == HALT);
 
 endmodule
