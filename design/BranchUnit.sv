@@ -7,6 +7,8 @@ module BranchUnit #(
     input logic [31:0] Imm,
     input logic Branch,
     input logic [31:0] AluResult,
+    input logic JalrSel,
+    input logic HaltSel,
     output logic [31:0] PC_Imm,
     output logic [31:0] PC_Four,
     output logic [31:0] BrPC,
@@ -20,9 +22,8 @@ module BranchUnit #(
 
   assign PC_Imm = PC_Full + Imm;
   assign PC_Four = PC_Full + 32'b100;
-  assign Branch_Sel = Branch && AluResult[0];  // 0:Branch is taken; 1:Branch is not taken
-
-  assign BrPC = (Branch_Sel) ? PC_Imm : 32'b0;  // Branch -> PC+Imm   // Otherwise, BrPC value is not important
-  assign PcSel = Branch_Sel;  // 1:branch is taken; 0:branch is not taken(choose pc+4)
-
+  assign Branch_Sel = (Branch && AluResult[0]) || JalrSel; // Desvio condicional ou incondicional
+  assign PcSel = Branch_Sel || HaltSel; // Se PcSel = 1, Pc é atualizado com o valor de BrPC, caso contrário Pc é atualizado com PC+4
+  assign BrPC = (JalrSel) ? AluResult : ((PcSel) ? PC_Imm : 32'b0);
+  
 endmodule
