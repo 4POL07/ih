@@ -40,6 +40,8 @@ module alu#(
                     ALUResult = ($signed(SrcA) < $signed(SrcB)) ? 1 : 0;
             4'b1011:        // BGE
                     ALUResult = ($signed(SrcA) >= $signed(SrcB)) ? 1 : 0;
+            4'b1100:        // JAL -> ALUResult[0] = 1 no BranchUnit
+                    ALUResult = 1;
             default:
                     ALUResult = 0;
             endcase
